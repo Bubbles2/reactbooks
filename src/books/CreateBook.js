@@ -11,7 +11,7 @@ import Header from '../ui/Header'
 import classes from './Book.module.css';
 import Button from '../ui//Button/Button';
 import { useHistory, useParams } from 'react-router-dom'
-import Input from '../ui/Input/InputB';
+import Input from '../ui/Input/Input';
 
 import * as bookActions from '../actions/books'
 import Tabs from 'react-bootstrap/Tabs';
