@@ -5,7 +5,7 @@
 // forms reduces but in the end this is the easier option because it makes 
 // field validation easier
 //==================================================================================  
-import React, { useState, useCallback, useEffect, useReducer } from 'react';
+import React, { useCallback, useReducer } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import Header from '../ui/Header'
 import classes from './Book.module.css';
@@ -25,6 +25,9 @@ const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 const formReducer = (state, action) => {
 
   //const [key, setKey] = useState('overview');
+
+  // Input classes is used to set up the CSS class names we will
+  // use to display errors
 
   if (action.type === FORM_INPUT_UPDATE) {
     const updatedValues = {
@@ -115,6 +118,7 @@ const CreateBook = (props) => {
     for (const [key, value] of Object.entries(formState.inputValues)) {
       let className = ''
       let validState = true
+      // Make sure the value is not empty
       if (value.trim().length === 0) {
         className = classes.error
         validState = true

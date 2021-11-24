@@ -14,6 +14,7 @@ const AppRouter = (props) => (
             <Switch>
                <Route path="/" component={BookList} exact={true}/>
                <Route path="/create" component={CreateBook} exact={true}/>
+               <Route path="/edit/:id" component={CreateBook} exact={true}/>
                </Switch>
         </div>
 </Router>

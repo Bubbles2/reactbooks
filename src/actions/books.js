@@ -30,71 +30,79 @@ async function getBooks() {
 
   return responseData;
 }
-export const startCreateBook = (recipe) => {
-  return async dispatch => {
-    return createBookDB(recipe).then((recipe) => {
-       dispatch(createBook(recipe));
-    }, err => console.log('Error ===>', err));
-  };
-};
-//==================================================================================  
-export const createBook = (recipe) => {
+//==============================================================
+// Add
+//==============================================================
+export const createBook = (book) => {
   return {
-    type: CREATE_BOOK,
-    recipe
+    type: ADD_BOOK,
+    book
   };
 };
-async function createBookDB(book) {
+export const  startCreateBook= (book) => {
+  return (dispatch) => {
+      return dbCreateBook(book).then((book) => {
+        return dispatch(createBook(book));
+      }, (err) => {
+        const error = new Error('Failed to fetch!');
+        throw error;   });
 
-  let formData = new FormData();
-  for (let [key, value] of Object.entries(book)) {
-    if (key != 'file') formData.append(key, value);
-  }
-
-  const response = await fetch('http://localhost:3001/book/create',
-  {
-    method: 'post',
-    body: formData,//
-  }).then( res => {
-    console.log("Result ==>", res);
-   } , err => {
-    console.log("Error ==>", err);
-  });
-
-  if (!response.ok) {
-    // error
-  }
-  const data = await response.json()
-  return data
-};
-//==================================================================================
-// Update a recipe
-//==================================================================================  
-
-export const startUpdateBook = (recipe) => {
-  return async dispatch => {
-    return updateBookDB(recipe).then((recipe) => {
-       dispatch(createBookDB(recipe));
-    }, err => console.log('Error ===>', err));
   };
 };
-async function updateBookDB(recipe) {
-  console.log('update recipe ===>', recipe)
-  let formData = new FormData();
-  for (let [key, value] of Object.entries(recipe)) {
-    if (key != 'file') formData.append(key, value);
-  }
-
-  const response = await fetch('http://localhost:3001/recipe/update/'+recipe._id,
-  {
-    method: 'put',
-    body: formData,//
+async function dbCreateBook(book) {
+     // test if values have changed
+let updurl = 'http://172.20.10.4:3001/book/create'
+  const response = await fetch(updurl,
+ {
+   method: 'post',
+   headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(book)
   })
-  
   if (!response.ok) {
     // error
+    throw new Error('Something went wrong !');
   }
-  const data = await response.json()
-  console.log("Result update  ===>", data)
+   const data = await response.json()
+   // Update Store
   return data
+};
+//==============================================================
+// Update
+//==============================================================
+export const updateBook = (book) => {
+  return {
+    type: UPDATE_BOOK,
+    book
+  };
+};
+export const startUpdateBook = (book) => {
+  return (dispatch) => {
+    return UpdateBookDB(book).then((data) => {
+      dispatch(updateBook(data));
+      return Promise.resolve('ok')
+    }, (err) => {
+      throw new Error('Something went wrong !  '+ err);    });
+  };
+};
+async function UpdateBookDB(book) {
+    // test if values have changed
+let updurl = 'http://172.20.10.4:3001/book/update/'+book._id
+  const response = await fetch(updurl,
+ {
+   method: 'put',
+   headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(book),
+  })
+  if (!response.ok) {
+    // error
+    throw new Error('Something went wrong !');
+  }
+   const data = await response.json()
+   // Update Store
+  return data
+
 };
